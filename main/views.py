@@ -42,6 +42,7 @@ class SubjectListView(generics.ListAPIView):
     serializer_class = SubjectSerializer
     pagination_class = None
 
+
 class RegisterView(generics.GenericAPIView):
     serializer_class = UserSerializer
 
@@ -346,11 +347,6 @@ class QuestionDeleteView(generics.DestroyAPIView):
                 'data': 'Question is deleted',
 
             })
-
-
-
-
-
 
 
 class AnswerListView(generics.ListAPIView):

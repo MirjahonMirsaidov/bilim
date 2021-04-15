@@ -7,7 +7,6 @@ from django.core.mail import send_mail
 
 
 class Subject(models.Model):
-
     name = models.CharField(max_length=255, verbose_name='Fanlar')
     slug = models.SlugField(unique=True)
     logo = models.ImageField(verbose_name='Logo', null=True, blank=True)
@@ -17,11 +16,10 @@ class Subject(models.Model):
 
 
 class Question(models.Model):
-
     subject = models.ForeignKey(Subject, verbose_name='Fan nomi', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='questions', on_delete=models.CASCADE)
     text = models.TextField(verbose_name='Savol matni')
-    asked_date = models.DateTimeField(auto_now=True, verbose_name='Savol berilgan vaqt')
+    asked_date = models.DateTimeField(auto_now_add=True, verbose_name='Savol berilgan vaqt')
     point = models.IntegerField()
     
     class Meta:
@@ -43,13 +41,13 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, verbose_name='Savol',  related_name='answers', on_delete=models.CASCADE)
     user = models.ForeignKey(User,  related_name='answers', on_delete=models.CASCADE)
     text = models.TextField(verbose_name='Javob matni', null=True)
-    answered_date = models.DateTimeField(auto_now=True, verbose_name='Javob berilgan vaqt')
+    answered_date = models.DateTimeField(auto_now_add=True, verbose_name='Javob berilgan vaqt')
     subject = models.ForeignKey(Subject, verbose_name='Savol', related_name='answers', on_delete=models.CASCADE)
     image = models.ImageField(verbose_name='Rasm', null=True, blank=True)
     is_best = models.BooleanField(default=False)
 
     def __str__(self):
-        return '{} savolning javobi: '.format(self.question.text)
+        return self.question.text
 
     
 class AnswerImage(models.Model):
@@ -61,10 +59,10 @@ class AnswerImage(models.Model):
 
 
 class Comment(models.Model):
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
-    created_date = models.DateTimeField(auto_now=True)
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.text
@@ -83,7 +81,7 @@ class Help(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='helps')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='helps')
     text = models.TextField()
-    created_date = models.DateTimeField(auto_now=True)
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.text
@@ -114,7 +112,8 @@ class RaitingCalc(models.Model):
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
 
-    email_plaintext_message = "{}?token={}".format(reverse('password_reset:reset-password-request'), reset_password_token.key)
+    email_plaintext_message = "{}?token={}".format(reverse('password_reset:reset-password-request'),
+                                                   reset_password_token.key)
 
     send_mail(
         # title:

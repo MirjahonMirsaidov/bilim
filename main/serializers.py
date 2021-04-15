@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from .models import  *
+from .models import *
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from rest_framework.serializers import CharField
+
 
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,14 +10,12 @@ class SubjectSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class ProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Profile
-        fields = ('user_id', 'rating', 'user_image', 'status', 'thanks', 'best_answers',)
+        fields = ('user_id', 'rating', 'user_image', 'status', 'thanks', 'best_answers')
         
-
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(required=False)
@@ -25,19 +23,16 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'date_joined', 'password', 'profile', )
-        
-        
 
     def validate(self, attrs):
         username = attrs.get('username',)
-        password = attrs.get('password')
         email = attrs.get('email')
         if User.objects.filter(username=username).exists():
             raise serializers.ValidationError({
-                'error':"Username is not available"})
+                'error': "Username is not available"})
         elif User.objects.filter(email=email).exists():
             raise serializers.ValidationError({
-                'error':'Email is already registered',
+                'error': 'Email is already registered',
                 })
         
         return super().validate(attrs)
@@ -46,24 +41,22 @@ class UserSerializer(serializers.ModelSerializer):
         return User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
-            password = make_password(validated_data['password'])
+            password=make_password(validated_data['password'])
         )
         
-
 
 class QuestionImagesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = QuestionImage
-        fields = ('images',)
+        fields = ('images', )
+
 
 class AnswerImagesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AnswerImage
         fields = ('images',)
-
-
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -73,14 +66,11 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('user_id', 'answer_id', 'text', 'created_date',)
 
 
-
 class HelpSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Help
         fields = ('user_id', 'question',  'text', 'created_date',)
-
-
 
 
 class RatingSerializer(serializers.ModelSerializer):
@@ -94,7 +84,7 @@ class ThanksSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Thank
-        fields = ('user_id',)
+        fields = ('user_id', )
 
 
 class AnswerSerializer(serializers.ModelSerializer):
@@ -103,13 +93,14 @@ class AnswerSerializer(serializers.ModelSerializer):
     subject = SubjectSerializer(many=False, required=False)
     thanks = ThanksSerializer(many=True, required=False)
     images = AnswerImagesSerializer(many=True, required=False)
+
     class Meta:
         model = Answer
-        fields = ('id', 'question_id', 'user_id', 'text', 'answered_date', 'images', 'is_best', 'subject', 'thanks', 'comments', 'user')
+        fields = ('id', 'question_id', 'user_id', 'text', 'answered_date', 'images', 'is_best',
+                  'subject', 'thanks', 'comments', 'user')
 
 
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):
-
     helps = HelpSerializer(many=True, required=False)
     answers = AnswerSerializer(many=True, required=False)
     subject = SubjectSerializer(many=False, required=False)
@@ -121,9 +112,7 @@ class QuestionSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'text', 'asked_date', 'point', 'subject_id', 'helps', 'answers',  'subject', 'images', 'user')
 
 
-
 class UserDetailSerializer(serializers.ModelSerializer):
-
     profile = ProfileSerializer(required=False)
     questions = QuestionSerializer(many=True)
     answers = AnswerSerializer(many=True)
@@ -133,9 +122,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         fields = ('username', 'date_joined', 'profile', 'questions', 'answers')
 
 
-
 class SubjectsSerializer(serializers.ModelSerializer):
-
     questions = QuestionSerializer(many=True)
 
     class Meta:
@@ -143,10 +130,8 @@ class SubjectsSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'slug', 'questions')
 
 
-
 class ChangePasswordSerializer(serializers.Serializer):
     model = User
-
     """
     Serializer for password change endpoint.
     """

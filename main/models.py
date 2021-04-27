@@ -28,7 +28,7 @@ class Question(models.Model):
     def __str__(self):
         return self.text
 
-    
+
 class QuestionImage(models.Model):
     question = models.ForeignKey(Question, default=None, on_delete=models.CASCADE, related_name='images')
     images = models.FileField()

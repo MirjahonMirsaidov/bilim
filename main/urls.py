@@ -1,56 +1,13 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from main.views import (
-    BaseView, 
-    apiOverview, 
-    QuestionListView,
-    QuestionCreateView,
-    QuestionDetailView,
-    QuestionUpdateView, 
-    QuestionDeleteView,
-    AnswerListView,
-    AnswerDetailView, 
-    AnswerCreateView, 
-    AnswerUpdateView, 
-    AnswerDeleteView,
-    SubjectListView,
-    UserListView,
-    UserUpdateView,
-    UserDetailView,
-    UserDeleteView,
-    UserQuestionsView,
-    UserAnswersView,
-    
-    RegisterView,
-    UsernameCheckView,
-    LoginView,
-    MeView,
-    LogoutView,
-    SubjectQuestionView,
-    RaitingListView,
-    UsersByRatingView,
-    ThanksView,
-    CommmentCreateView,
-    CommmentListView,
-    HelpCreateView,
-    HelpListView,
-    BestCreateView,
-    ChangePasswordView,
-    # QuesionImageViewSet
-)
+from django.urls import path
+from main.views import *
 
 
-app_name='main'
-
-# router = DefaultRouter()
-# # router.register(r'question-image', QuesionImageViewSet)
-
+app_name = 'main'
 
 urlpatterns = [
-    path('', apiOverview, name="api-overview"),
+    path('', api_overview, name="api-overview"),
     path('subjects/', SubjectListView.as_view(), name="subjects"),
     path('subjects/<slug:slug>', SubjectQuestionView.as_view()),
-    # path('', include(router.urls)),
 
     path('questions/', QuestionListView.as_view(), name="questions"),
     path('question-detail/<str:pk>/', QuestionDetailView.as_view(), name="question-detail"),
@@ -66,12 +23,12 @@ urlpatterns = [
 
     path('users/', UserListView.as_view(), name='users'),
     path('user-detail/<str:pk>/', UserDetailView.as_view(), name ='user-detail'),
-    path('user-update/', UserUpdateView.as_view(), name = 'user-update'),
+    path('user-update/', UserUpdateView.as_view(), name='user-update'),
     path('change-password/', ChangePasswordView.as_view()),
-    path('user-questions/<int:user_id>/', UserQuestionsView.as_view(), name ='user-questions'),
-    path('user-answers/<int:user_id>/', UserAnswersView.as_view(), name ='user-answers'),
-    path('user-delete/', UserDeleteView.as_view(), name = 'user-delete'),
-    path('username-check/', UsernameCheckView.as_view(), name = 'username-check'),
+    path('user-questions/<int:user_id>/', UserQuestionsView.as_view(), name='user-questions'),
+    path('user-answers/<int:user_id>/', UserAnswersView.as_view(), name='user-answers'),
+    path('user-delete/', UserDeleteView.as_view(), name='user-delete'),
+    path('username-check/', UsernameCheckView.as_view(), name='username-check'),
 
 
     path('comment-create/', CommmentCreateView.as_view(), name='comment-create'),
@@ -80,8 +37,8 @@ urlpatterns = [
     path('helps/', HelpListView.as_view(), name='helps'),
     path('best-create/', BestCreateView.as_view(), name='best-create'),
 
-    path('user-rating/', UsersByRatingView.as_view(), name = 'user-rating'),
-    path('thanks/', ThanksView.as_view(), name = 'thanks'),
+    path('user-rating/', UsersByRatingView.as_view(), name='user-rating'),
+    path('thanks/', ThanksView.as_view(), name='thanks'),
     path('register/', RegisterView.as_view()),
     path('login/', LoginView.as_view()),
     path('me/', MeView.as_view()),

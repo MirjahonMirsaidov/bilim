@@ -1,28 +1,21 @@
-from django.shortcuts import render
-from django.views.generic import View
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, logout, hashers
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.conf import settings
 from django.contrib import auth
-from django.db.models import Count
-from django.http import JsonResponse
-from rest_framework import viewsets, generics, status, filters, pagination, mixins
+from django.http import Http404
+from rest_framework import generics, status, filters
 from rest_framework.decorators import api_view
-from rest_framework.settings import api_settings
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-from rest_framework.parsers import MultiPartParser, FormParser
-from .models import *
+
+
+from main.models import *
 from .serializers import *
+
 import hashlib
 
 
 @api_view(['GET', ])
-def apiOverview(request):
+def api_overview(request):
     api_urls = {
         'Subjects': '/subjects/',
         'Questions': '/questions/',
@@ -40,7 +33,6 @@ def apiOverview(request):
 class SubjectListView(generics.ListAPIView):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
-    pagination_class = None
 
 
 class RegisterView(generics.GenericAPIView):
@@ -64,7 +56,6 @@ class UsernameCheckView(generics.GenericAPIView):
 
     def post(self, request):
         username = request.data.get('username')
-
         checked = User.objects.filter(username=username).exists()
 
         if checked:
@@ -72,15 +63,14 @@ class UsernameCheckView(generics.GenericAPIView):
                 'status': 400,
                 'data': 'Имя пользователя не доступно',
             })
-        else:
-            return Response({
+
+        return Response({
                 'status': 200,
                 'data': 'Доступно',
             })
 
 
 class LoginView(APIView):
-    permission_classes = []
     serializer_class = UserSerializer
 
     def post(self, request):
@@ -100,10 +90,10 @@ class LoginView(APIView):
 
 
 class MeView(APIView):
+
     def get(self, request):
         user = request.user
         point = user.profile.rating
-       
         
         if 0 < point < 100:
             user.profile.status = 'новичок'
@@ -266,7 +256,6 @@ class UserQuestionsView(generics.ListAPIView):
 
     def get_queryset(self):
         questions = Answer.objects.filter(user=self.kwargs['user_id'])
-
         return questions
 
 
@@ -275,7 +264,6 @@ class UserAnswersView(generics.ListAPIView):
 
     def get_queryset(self):
         answers = Answer.objects.filter(user=self.kwargs['user_id'])
-
         return answers
 
 
@@ -283,7 +271,6 @@ class SubjectQuestionView(generics.ListAPIView):
     serializer_class = QuestionSerializer
     
     def get_queryset(self):
-
         subject_questions = Question.objects.all()
         slug = self.kwargs['slug']
         subject_id = Subject.objects.get(slug=slug).id
@@ -301,7 +288,6 @@ class QuestionListView(generics.ListCreateAPIView):
     filter_backends = (filters.SearchFilter,)
 
     def get_queryset(self):
-
         queryset = Question.objects.order_by('-id')
         return queryset
 
@@ -345,7 +331,6 @@ class QuestionDeleteView(generics.DestroyAPIView):
             return Response({
                 'status': 200,
                 'data': 'Question is deleted',
-
             })
 
 
@@ -353,7 +338,6 @@ class AnswerListView(generics.ListAPIView):
     serializer_class = AnswerSerializer
 
     def get_queryset(self):
-
         queryset = Answer.objects.all()
         return queryset
 
@@ -392,7 +376,6 @@ class AnswerDeleteView(generics.DestroyAPIView):
             return Response({
                 'status': 200,
                 'data': 'Answer is deleted',
-
             })
 
 
@@ -404,14 +387,12 @@ class RaitingListView(generics.ListAPIView):
         return queryset
 
 
-
 class UsersByRatingView(generics.ListAPIView):
     serializer_class = UserSerializer
 
     def get_queryset(self):
         queryset = User.objects.order_by('-profile__rating')
         return queryset
-
 
 
 class CommmentListView(generics.ListAPIView):
@@ -476,7 +457,6 @@ class CommmentCreateView(generics.GenericAPIView):
                     'user_id': user_id,
                     'answer_id': answer_id,
                     'commment': text,
-
                 },
             })
 
@@ -509,14 +489,12 @@ class BestCreateView(generics.GenericAPIView):
         return Response(serializer.errors)
 
 
-
 class HelpListView(generics.ListAPIView):
     serializer_class = HelpSerializer
 
     def get_queryset(self):
         queryset = Help.objects.all()
         return queryset
-
 
 
 class HelpCreateView(generics.GenericAPIView):
@@ -536,12 +514,10 @@ class HelpCreateView(generics.GenericAPIView):
                     'user_id': user_id,
                     'question_id': question_id,
                     'commment': text,
-
                 },
             })
 
         return Response(serializer.errors)
-
 
 
 class QuestionCreateView(generics.CreateAPIView):
@@ -613,7 +589,6 @@ class QuestionCreateView(generics.CreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class AnswerCreateView(generics.CreateAPIView):
     serializer_class = AnswerSerializer
 
@@ -654,9 +629,9 @@ class AnswerCreateView(generics.CreateAPIView):
             user.save()
 
             answer = serializer.save(question_id=question,
-                            user_id=user_id, subject_id=subject)
-            RaitingCalc.objects.create(
-                user_id=user_id, check_sum=check_sum, ball=ball, ball_type=ball_type)
+                                     user_id=user_id, subject_id=subject)
+            RaitingCalc.objects.create(user_id=user_id, check_sum=check_sum,
+                                       ball=ball, ball_type=ball_type)
             
             for file_num in range(0, int(length)):
                     images = request.data.get(f'images{file_num}')
@@ -673,14 +648,11 @@ class AnswerCreateView(generics.CreateAPIView):
                     'user': user.pk,
                     'question_id': question,
                     'answer': text,
-
                 }
             },
                 status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 class ThanksView(generics.CreateAPIView):
@@ -710,17 +682,17 @@ class ThanksView(generics.CreateAPIView):
             },
         })
 
-
-
-class BaseView(View):
-
-    def get(self, request):
-
-        subjects = Subject.objects.all()
-        questions = Question.objects.order_by("-id")[:6]
-
-        context = {
-            'subjects': subjects,
-            'questions': questions
-        }
-        return render(request, 'base.html', context)
+#
+#
+# class BaseView(View):
+#
+#     def get(self, request):
+#
+#         subjects = Subject.objects.all()
+#         questions = Question.objects.order_by("-id")[:6]
+#
+#         context = {
+#             'subjects': subjects,
+#             'questions': questions
+#         }
+#         return render(request, 'base.html', context)

@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'date_joined', 'password', 'profile', )
 
     def validate(self, attrs):
-        username = attrs.get('username',)
+        username = attrs.get('username')
         email = attrs.get('email')
         if User.objects.filter(username=username).exists():
             raise serializers.ValidationError({

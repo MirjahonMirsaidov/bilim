@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'main',
     'django_filters',
     'django_rest_passwordreset',
-    'corsheaders',
+    # 'corsheaders',
 
 ]
 
@@ -59,7 +59,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'bilim.urls'
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
 
 TEMPLATES = [
@@ -87,10 +87,11 @@ WSGI_APPLICATION = 'bilim.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'localhost',
-        'NAME': 'bilim_db',
+        'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': '0214',
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 
@@ -156,6 +157,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         # 'rest_framework.permissions.IsAuthenticated',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'bilim.pagination.CustomPagination',
-    'PAGE_SIZE': 10,
+#     'DEFAULT_PAGINATION_CLASS': 'bilim.pagination.CustomPagination',
+#     'PAGE_SIZE': 10,
 }

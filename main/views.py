@@ -38,7 +38,8 @@ class SubjectListView(generics.ListAPIView):
 class RegisterView(generics.GenericAPIView):
     serializer_class = UserSerializer
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -54,7 +55,8 @@ class RegisterView(generics.GenericAPIView):
 class UsernameCheckView(generics.GenericAPIView):
     serializer_class = UserSerializer
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         username = request.data.get('username')
         checked = User.objects.filter(username=username).exists()
 
@@ -73,7 +75,8 @@ class UsernameCheckView(generics.GenericAPIView):
 class LoginView(APIView):
     serializer_class = UserSerializer
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         username = request.data.get('username')
         password = request.data.get('password')
         user = auth.authenticate(username=username, password=password)
@@ -91,7 +94,8 @@ class LoginView(APIView):
 
 class MeView(APIView):
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         user = request.user
         point = user.profile.rating
         
@@ -137,7 +141,8 @@ class MeView(APIView):
 
 class LogoutView(APIView):
 
-    def delete(self, request, format=None):
+    @staticmethod
+    def delete(request, format=None):
         request.user.auth_token.delete()
         return Response("Logout Success")
 
@@ -180,7 +185,8 @@ class UserDetailView(generics.RetrieveAPIView):
 class UserUpdateView(generics.GenericAPIView):
     serializer_class = UserSerializer
 
-    def patch(self, request):
+    @staticmethod
+    def patch(request):
         serializer = UserSerializer(data=request.data)
         user = request.user
         username = request.data.get('username')
@@ -299,7 +305,8 @@ class QuestionDetailView(generics.RetrieveAPIView):
 class QuestionUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = QuestionSerializer
 
-    def post(self, request, pk):
+    @staticmethod
+    def post(request, pk):
         serializer = QuestionSerializer(data=request.data)
         question = Question.objects.get(id=pk)
         text = request.data.get('text')
@@ -349,7 +356,8 @@ class AnswerDetailView(generics.RetrieveAPIView):
 class AnswerUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = AnswerSerializer
 
-    def post(self, request, pk):
+    @staticmethod
+    def post(request, pk):
         serializer = AnswerSerializer(data=request.data)
         answer = Answer.objects.get(id=pk)
         text = request.data.get('text')
@@ -443,7 +451,8 @@ class ChangePasswordView(generics.UpdateAPIView):
 class CommmentCreateView(generics.GenericAPIView):
     serializer_class = CommentSerializer
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         serializer = CommentSerializer(data=request.data)
         answer_id = request.data.get('answer')
         text = request.data.get('text')
@@ -465,7 +474,8 @@ class CommmentCreateView(generics.GenericAPIView):
 class BestCreateView(generics.GenericAPIView):
     serializer_class = AnswerSerializer
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         serializer = AnswerSerializer(data=request.data)
         answer_id = request.data.get('answer_id')
         answer = Answer.objects.get(id=answer_id)
@@ -499,7 +509,8 @@ class HelpListView(generics.ListAPIView):
 class HelpCreateView(generics.GenericAPIView):
     serializer_class = HelpSerializer
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         serializer = HelpSerializer(data=request.data)
         question_id = request.data.get('question')
         text = request.data.get('text')

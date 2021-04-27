@@ -30,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
         if User.objects.filter(username=username).exists():
             raise serializers.ValidationError({
                 'error': "Username is not available"})
-        elif User.objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists():
             raise serializers.ValidationError({
                 'error': 'Email is already registered',
                 })

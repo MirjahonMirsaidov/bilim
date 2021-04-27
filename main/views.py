@@ -192,7 +192,7 @@ class UserUpdateView(generics.GenericAPIView):
         username = request.data.get('username')
         user_image = request.data.get('user_image')
         if user_image:
-            if username == user.username or username is None or username == '':
+            if username == user.username or not username:
                 user.profile.user_image = user_image
                 user.profile.save()
                 return Response("Image successfuly updated")

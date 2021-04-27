@@ -237,11 +237,10 @@ class UserDeleteView(generics.GenericAPIView):
             return Response({
                 'error': "Wrong password."
             }, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            user.delete()
-            return Response({
-                'succes': 'User deleted successfully!'}, status=status.HTTP_200_OK
-            )
+        user.delete()
+        return Response({
+            'succes': 'User deleted successfully!'}, status=status.HTTP_200_OK
+        )
 
     def get_object(self):
         try:
@@ -583,8 +582,7 @@ class QuestionCreateView(generics.CreateAPIView):
                         'point': -ball,
                     }
                 },)
-            else:
-                return Response(f'Savol uchun bergan ballingiz {profile_ball} dan katta')
+            return Response(f'Savol uchun bergan ballingiz {profile_ball} dan katta')
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -667,9 +665,8 @@ class ThanksView(generics.CreateAPIView):
         answerid = Thank.objects.filter(user_id=user_id, answer_id=answer_id)
         if answerid:
             return Response("Faqat bir marta")
-        else:
-            thank = Thank.objects.create(
-                answer_id=answer_id, count=thanks, user_id=user_id)
+        thank = Thank.objects.create(
+            answer_id=answer_id, count=thanks, user_id=user_id)
         thank.save()
         user = User.objects.get(id=answer.user_id)
         user.profile.thanks += 1

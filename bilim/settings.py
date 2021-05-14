@@ -27,6 +27,7 @@ SECRET_KEY = 'mm*jsis%wp4uv^p#-efb5cz^1*kmkt89w)yy^p6x3_&99jd2%x'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CORS_ALLOW_ALL_ORIGINS: True
 
 
 # Application definition
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'rest_framework.authtoken',
     'main',
     'django_filters',

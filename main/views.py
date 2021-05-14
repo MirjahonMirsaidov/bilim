@@ -668,39 +668,25 @@ class ThanksView(generics.CreateAPIView):
     serializer_class = AnswerSerializer
 
     def post(self, request):
-        serializer = AnswerSerializer(data=request.data)
         answer_id = request.data.get('id')
-        thanks = 1
         answer = Answer.objects.get(id=answer_id)
         user_id = request.user.pk
-        answerid = Thank.objects.filter(user_id=user_id, answer_id=answer_id)
-        if answerid:
-            return Response("Faqat bir marta")
-        thank = Thank.objects.create(
-            answer_id=answer_id, count=thanks, user_id=user_id)
-        thank.save()
-        user = User.objects.get(id=answer.user_id)
-        user.profile.thanks += 1
-        user.profile.save()
+        thank_check = Thank.objects.filter(user_id=user_id, answer_id=answer_id)
+        if thank_check:
+            return Response("Faqat bir marta", status=status.HTTP_208_ALREADY_REPORTED)
+        else:
 
-        return Response({
-            'status': 200,
-            'data': {
-                'answer': answer.text,
-            },
-        })
+            thank = Thank.objects.create(
+                answer_id=answer_id, count=1, user_id=user_id)
+            thank.save()
+            user = User.objects.get(id=answer.user_id)
+            user.profile.thanks += 1
+            user.profile.save()
 
-#
-#
-# class BaseView(View):
-#
-#     def get(self, request):
-#
-#         subjects = Subject.objects.all()
-#         questions = Question.objects.order_by("-id")[:6]
-#
-#         context = {
-#             'subjects': subjects,
-#             'questions': questions
-#         }
-#         return render(request, 'base.html', context)
+            return Response({
+                'status': 200,
+                'data': {
+                    'answer': answer.text,
+                },
+            })
+

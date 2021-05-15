@@ -5,7 +5,6 @@ from main.views import *
 app_name = 'main'
 
 urlpatterns = [
-    path('', api_overview, name="api-overview"),
     path('subjects/', SubjectListView.as_view(), name="subjects"),
     path('subjects/<slug:slug>', SubjectQuestionView.as_view()),
 

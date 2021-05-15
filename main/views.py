@@ -15,22 +15,6 @@ from .serializers import *
 import hashlib
 
 
-@api_view(['GET', ])
-def api_overview(request):
-    api_urls = {
-        'Subjects': '/subjects/',
-        'Questions': '/questions/',
-        'Question-Detail': '/question-detail/<str:pk>/',
-        'Create': '/question-create/',
-        'Update': '/question-update/<str:pk>/',
-        'Delete': '/question-delete/<str:pk>/',
-        'Users': '/users/',
-        'User-detail': 'user-detail/<str:pk>/',
-    }
-
-    return Response(api_urls)
-
-
 class SubjectListView(generics.ListAPIView):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
@@ -47,7 +31,6 @@ class RegisterView(generics.GenericAPIView):
             username = request.data.get('username')
             id = User.objects.get(username=username).id
             profile = Profile.objects.get_or_create(user_id=id)
-            profile.save()
             point = profile.rating
 
             return Response("Ro'yxatdan o'tish muvaffaqiyatli yakunlandi", status=status.HTTP_200_OK)
@@ -79,18 +62,22 @@ class LoginView(APIView):
 
     @staticmethod
     def post(request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        user = auth.authenticate(username=username, password=password)
+        try:
+            username = request.data.get('username')
+            password = request.data.get('password')
+            user = auth.authenticate(username=username, password=password)
 
-        if user is not None:
-            token, created = Token.objects.get_or_create(user=user)
+            if user is not None:
+                token, created = Token.objects.get_or_create(user=user)
 
-            return Response({
-                'token': token.key,
-                'username': username
-            })
-        return Response(status=status.HTTP_404_NOT_FOUND)
+                return Response({
+                    'token': token.key,
+                    'username': username
+                })
+            else:
+                return Response("User topilmadi", status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class MeView(APIView):
@@ -624,15 +611,16 @@ class AnswerCreateView(generics.CreateAPIView):
             answer = serializer.save(question_id=question,
                                      user_id=user_id, subject_id=subject)
             create_calc(user_id, check_sum, ball, ball_type)
-            
-            for file_num in range(0, int(length)):
-                    images = request.data.get(f'images{file_num}')
-                    AnswerImage.objects.create(
-                        answer=answer,
-                        images=images
-                    )
-                    print(images,request.data)
-
+            if length:
+                for file_num in range(0, int(length)):
+                        images = request.data.get(f'images{file_num}')
+                        AnswerImage.objects.create(
+                            answer=answer,
+                            images=images
+                        )
+                        print(images,request.data)
+            else:
+                print("Rasmsiz")
             return Response({
 
                 'status': 200,

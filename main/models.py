@@ -99,7 +99,7 @@ class Profile(models.Model):
         return self.user.username
 
 
-class RaitingCalc(models.Model):
+class RatingCalc(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ball = models.IntegerField()
     ball_type = models.CharField(max_length=50)

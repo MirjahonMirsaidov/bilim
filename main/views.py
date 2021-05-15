@@ -9,6 +9,7 @@ from rest_framework.authtoken.models import Token
 
 
 from main.models import *
+from utils.calc import create_calc
 from .serializers import *
 
 import hashlib
@@ -149,7 +150,7 @@ class LogoutView(APIView):
 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
-    serializer_class = UserGetserializer
+    serializer_class = UserGetSerializer
 
 
 class UserDetailView(generics.RetrieveAPIView):
@@ -376,7 +377,7 @@ class RaitingListView(generics.ListAPIView):
     serializer_class = RatingSerializer
 
     def get_queryset(self):
-        queryset = RaitingCalc.objects.all()
+        queryset = RatingCalc.objects.all()
         return queryset
 
 
@@ -528,15 +529,15 @@ class QuestionCreateView(generics.CreateAPIView):
         user_id = request.user.pk
         ball = -int(request.data.get('point'))
         ball_type = 'savol'
-        user = RaitingCalc.objects.filter(user=user_id).exists()
+        user = RatingCalc.objects.filter(user=user_id).exists()
 
         if user:
-            data_is = RaitingCalc.objects.filter(
+            last_sum = RatingCalc.objects.filter(
                 user_id=user_id).last().check_sum
             m = hashlib.md5(
-                str(data_is+str(user_id)+str(ball)+ball_type).encode('utf-8'))
+                str(last_sum+str(user_id)+str(ball)+ball_type).encode('utf-8'))
             check_sum = m.hexdigest()
-            print(data_is)
+            print(last_sum)
             print(check_sum)
 
         else:
@@ -544,9 +545,8 @@ class QuestionCreateView(generics.CreateAPIView):
                 str(str(user_id)+str(ball)+ball_type).encode('utf-8'))
             check_sum = m.hexdigest()
             print(check_sum)
-        subjectcheck = Subject.objects.filter(id=subject).exists()
-        print(subjectcheck)
-        if subjectcheck is None or subjectcheck is False:
+        sub_check = Subject.objects.filter(id=subject).exists()
+        if sub_check is None or sub_check is False:
             return Response({
                 'status': 400, 
             })
@@ -560,8 +560,7 @@ class QuestionCreateView(generics.CreateAPIView):
                 user.save()
                 question = serializer.save(subject_id=subject, user_id=user_id)
                 print(question)
-                RaitingCalc.objects.create(
-                    user_id=user_id, check_sum=check_sum, ball=ball, ball_type=ball_type)
+                create_calc(user_id, check_sum, ball, ball_type)
                 for file_num in range(0, int(length)):
                     images = request.FILES.get(f'images{file_num}')
                     QuestionImage.objects.create(
@@ -597,16 +596,15 @@ class AnswerCreateView(generics.CreateAPIView):
         ball = Question.objects.get(id=question).point
         subject = Question.objects.get(id=question).subject_id
         ball_type = 'javob'
-        user = RaitingCalc.objects.filter(user=user_id).exists()
+        user = RatingCalc.objects.filter(user=user_id).exists()
 
         if user:
-            data_is = RaitingCalc.objects.filter(
+            last_sum = RatingCalc.objects.filter(
                 user_id=user_id).last().check_sum
-            m = hashlib.md5(str(data_is + str(user_id) +
+            m = hashlib.md5(str(last_sum + str(user_id) +
                                 str(ball) + ball_type).encode('utf-8'))
             check_sum = m.hexdigest()
-            print(data_is)
-            print(check_sum)
+
 
         else:
             m = hashlib.md5(
@@ -625,8 +623,7 @@ class AnswerCreateView(generics.CreateAPIView):
 
             answer = serializer.save(question_id=question,
                                      user_id=user_id, subject_id=subject)
-            RaitingCalc.objects.create(user_id=user_id, check_sum=check_sum,
-                                       ball=ball, ball_type=ball_type)
+            create_calc(user_id, check_sum, ball, ball_type)
             
             for file_num in range(0, int(length)):
                     images = request.data.get(f'images{file_num}')

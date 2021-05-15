@@ -45,7 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
 
-class UserGetserializer(serializers.ModelSerializer):
+class UserGetSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(required=False)
 
     class Meta:
@@ -83,7 +83,7 @@ class HelpSerializer(serializers.ModelSerializer):
 class RatingSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = RaitingCalc
+        model = RatingCalc
         fields = '__all__'
 
 

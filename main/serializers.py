@@ -43,7 +43,14 @@ class UserSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=make_password(validated_data['password'])
         )
-        
+
+
+class UserGetserializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(required=False)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'profile', )
 
 class QuestionImagesSerializer(serializers.ModelSerializer):
 

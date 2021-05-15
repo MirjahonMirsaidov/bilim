@@ -149,7 +149,7 @@ class LogoutView(APIView):
 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserGetSerializer
 
 
 class UserDetailView(generics.RetrieveAPIView):
@@ -395,7 +395,7 @@ class RaitingListView(generics.ListAPIView):
 
 
 class UsersByRatingView(generics.ListAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserGetSerializer
 
     def get_queryset(self):
         queryset = User.objects.order_by('-profile__rating')

@@ -46,9 +46,10 @@ class RegisterView(generics.GenericAPIView):
             username = request.data.get('username')
             id = User.objects.get(username=username).id
             profile = Profile.objects.get_or_create(user_id=id)
-            point = request.user.profile.rating
+            profile.save()
+            point = profile.rating
 
-            return Response("Registration success", status=status.HTTP_200_OK)
+            return Response("Ro'yxatdan o'tish muvaffaqiyatli yakunlandi", status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -86,10 +87,9 @@ class LoginView(APIView):
 
             return Response({
                 'token': token.key,
-                'user_id': user.pk,
                 'username': username
             })
-        return Response({'response': 'user not found'})
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class MeView(APIView):
@@ -149,7 +149,7 @@ class LogoutView(APIView):
 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
-    serializer_class = UserGetSerializer
+    serializer_class = UserGetserializer
 
 
 class UserDetailView(generics.RetrieveAPIView):
@@ -214,20 +214,6 @@ class UserUpdateView(generics.GenericAPIView):
             })
         else:
             return Response("O'zgarish amalga oshiring!")
-
-
-# class UserDeleteView(generics.DestroyAPIView):
-#     permission_classes = [IsAuthenticated, ]
-#     serializer_class = UserSerializer
-#     lookup_field =
-#     queryset = User.objects.all()
-
-#     def get_object(self):
-#         try:
-#             instance = self.queryset.get(username=self.request.user.username)
-#             return instance
-#         except User.DoesNotExist:
-#             raise Http404
 
 
 class UserDeleteView(generics.GenericAPIView):

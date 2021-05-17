@@ -29,7 +29,6 @@ urlpatterns = [
     path('user-delete/', UserDeleteView.as_view(), name='user-delete'),
     path('username-check/', UsernameCheckView.as_view(), name='username-check'),
 
-
     path('comment-create/', CommmentCreateView.as_view(), name='comment-create'),
     path('comments/', CommmentListView.as_view(), name='comments'),
     path('help-create/', HelpCreateView.as_view(), name='help-create'),
@@ -42,6 +41,5 @@ urlpatterns = [
     path('login/', LoginView.as_view()),
     path('me/', MeView.as_view()),
     path('logout/', LogoutView.as_view()),
-
 
 ]

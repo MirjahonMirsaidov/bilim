@@ -30,8 +30,7 @@ class RegisterView(generics.GenericAPIView):
             serializer.save()
             username = request.data.get('username')
             id = User.objects.get(username=username).id
-            profile = Profile.objects.get_or_create(user_id=id)
-            point = profile.rating
+            Profile.objects.create(user_id=id)
 
             return Response("Ro'yxatdan o'tish muvaffaqiyatli yakunlandi", status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -360,7 +359,7 @@ class AnswerDeleteView(generics.DestroyAPIView):
             })
 
 
-class RaitingListView(generics.ListAPIView):
+class RatingListView(generics.ListAPIView):
     serializer_class = RatingSerializer
 
     def get_queryset(self):
@@ -385,9 +384,7 @@ class CommmentListView(generics.ListAPIView):
 
 
 class ChangePasswordView(generics.UpdateAPIView):
-    """
-    Change user password 
-    """
+
     serializer_class = ChangePasswordSerializer
     model = User
     permission_classes = (IsAuthenticated,)
@@ -404,14 +401,14 @@ class ChangePasswordView(generics.UpdateAPIView):
         if serializer.is_valid():
             # Check old password
             if not self.object.check_password(serializer.data.get("old_password")):
-                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"old_password": ["Parol noto'g'ri"]}, status=status.HTTP_400_BAD_REQUEST)
             # set_password also hashes the password that the user will get
             self.object.set_password(serializer.data.get("new_password"))
             self.object.save()
             response = {
                 'status': 'success',
                 'code': status.HTTP_200_OK,
-                'message': 'Password updated successfully',
+                'message': 'Parol yangilandi',
                 'data': {
                     'username': user.username,
                 }
@@ -490,16 +487,27 @@ class HelpCreateView(generics.GenericAPIView):
         text = request.data.get('text')
         user_id = request.user.pk
         if serializer.is_valid():
-            serializer.save(user_id=user_id,
-                            question_id=question_id, text=text)
-            return Response({
-                'status': 200,
-                'data': {
-                    'user_id': user_id,
-                    'question_id': question_id,
-                    'commment': text,
-                },
-            })
+            if Help.objects.filter(user_id=user_id, question_id=question_id, text=text).first():
+                return Response({
+
+                    'status': 'failed',
+                    'code': status.HTTP_400_BAD_REQUEST,
+                    'message': "Mavjud xabar",
+                })
+            else:
+                serializer.save(user_id=user_id,
+                                question_id=question_id, text=text)
+                return Response({
+
+                    'status': 'succes',
+                    'code': status.HTTP_200_OK,
+                    'message': "Muvaffaqiyali qo'shildi",
+                    'data': {
+                        'user_id': user_id,
+                        'question_id': question_id,
+                        'text': text,
+                    },
+                })
 
         return Response(serializer.errors)
 

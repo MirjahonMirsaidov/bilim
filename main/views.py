@@ -7,11 +7,9 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 
-
 from main.models import *
 from utils.calc import create_calc
 from .serializers import *
-
 import hashlib
 
 
@@ -399,22 +397,23 @@ class ChangePasswordView(generics.UpdateAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-            # Check old password
+            # Eski parolni tekshirish
             if not self.object.check_password(serializer.data.get("old_password")):
                 return Response({"old_password": ["Parol noto'g'ri"]}, status=status.HTTP_400_BAD_REQUEST)
-            # set_password also hashes the password that the user will get
-            self.object.set_password(serializer.data.get("new_password"))
-            self.object.save()
-            response = {
-                'status': 'success',
-                'code': status.HTTP_200_OK,
-                'message': 'Parol yangilandi',
-                'data': {
-                    'username': user.username,
+            else:
+                # parolni yangilash
+                self.object.set_password(serializer.data.get("new_password"))
+                self.object.save()
+                response = {
+                    'status': 'success',
+                    'code': status.HTTP_200_OK,
+                    'message': 'Parol yangilandi',
+                    'data': {
+                        'username': user.username,
+                    }
                 }
-            }
 
-            return Response(response)
+                return Response(response)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -523,7 +522,7 @@ class QuestionCreateView(generics.CreateAPIView):
         length = request.data.get('length')
         user_id = request.user.pk
         ball = -int(request.data.get('point'))
-        ball_type = 'savol'
+        ball_type = 'question'
         user = RatingCalc.objects.filter(user=user_id).exists()
 
         if user:
@@ -543,7 +542,9 @@ class QuestionCreateView(generics.CreateAPIView):
         sub_check = Subject.objects.filter(id=subject).exists()
         if sub_check is None or sub_check is False:
             return Response({
-                'status': 400, 
+                'status': 'failed',
+                'code': status.HTTP_404_NOT_FOUND,
+
             })
         if serializer.is_valid():
             user = Profile.objects.get(user=user_id)
@@ -554,7 +555,6 @@ class QuestionCreateView(generics.CreateAPIView):
                 user.rating = profile_ball
                 user.save()
                 question = serializer.save(subject_id=subject, user_id=user_id)
-                print(question)
                 create_calc(user_id, check_sum, ball, ball_type)
                 for file_num in range(0, int(length)):
                     images = request.FILES.get(f'images{file_num}')
@@ -565,7 +565,8 @@ class QuestionCreateView(generics.CreateAPIView):
                     print(images,request.data)
 
                 return Response({
-                    'status': 200,
+                    'status': 'succes',
+                    'code': status.HTTP_200_OK,
                     'data': {
                         'username': request.user.username,
                         'subject': subject,
@@ -590,7 +591,7 @@ class AnswerCreateView(generics.CreateAPIView):
         user_id = request.user.pk
         ball = Question.objects.get(id=question).point
         subject = Question.objects.get(id=question).subject_id
-        ball_type = 'javob'
+        ball_type = 'answer'
         user = RatingCalc.objects.filter(user=user_id).exists()
 
         if user:

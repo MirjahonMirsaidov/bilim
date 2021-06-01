@@ -325,7 +325,7 @@ class QuestionUpdateView(generics.RetrieveUpdateAPIView):
 
 class QuestionDeleteView(generics.DestroyAPIView):
     serializer_class = QuestionSerializer
-    permission_classes = (Or(IsAdminUser, IsAuthenticated))
+    permission_classes = (Or(IsAdminUser, IsAuthenticated), )
 
     def delete(self, request, pk):
         question = Question.objects.get(id=pk)
@@ -373,7 +373,7 @@ class AnswerUpdateView(generics.RetrieveUpdateAPIView):
 
 class AnswerDeleteView(generics.DestroyAPIView):
     serializer_class = AnswerSerializer
-    permission_classes = (Or(IsAdminUser, IsAuthenticated))
+    permission_classes = (Or(IsAdminUser, IsAuthenticated),)
 
     def delete(self, request, pk):
         answer = Answer.objects.get(id=pk)

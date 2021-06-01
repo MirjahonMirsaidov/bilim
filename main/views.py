@@ -89,6 +89,7 @@ class LoginView(APIView):
 
 
 class MeView(APIView):
+    permission_classes = (Or(IsAdminUser, IsAuthenticated))
 
     @staticmethod
     def get(request):

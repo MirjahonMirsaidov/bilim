@@ -89,7 +89,6 @@ class LoginView(APIView):
 
 
 class MeView(APIView):
-    permission_classes = (Or(IsAdminUser, IsAuthenticated))
 
     @staticmethod
     def get(request):
@@ -134,6 +133,7 @@ class MeView(APIView):
                     'rating': user.profile.rating,
                     'status': user.profile.status,
                     'image': image,
+                    'is_admin': user.is_superuser,
                 }
             }
         })

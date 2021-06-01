@@ -1,11 +1,14 @@
 from django.contrib import auth
 from django.http import Http404
 from rest_framework import generics, status, filters
+import rest_framework
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
+from drf_composable_permissions.permissions import IsReadOnly, IsSuperuser
+from drf_composable_permissions.p import P
 
 from main.models import *
 from utils.calc import create_calc
@@ -319,6 +322,7 @@ class QuestionUpdateView(generics.RetrieveUpdateAPIView):
 
 class QuestionDeleteView(generics.DestroyAPIView):
     serializer_class = QuestionSerializer
+    permission_classes = P(IsSuperuser) | (P(IsAuthenticated) & P(IsReadOnly))
 
     def delete(self, request, pk):
         question = Question.objects.get(id=pk)
@@ -366,6 +370,7 @@ class AnswerUpdateView(generics.RetrieveUpdateAPIView):
 
 class AnswerDeleteView(generics.DestroyAPIView):
     serializer_class = AnswerSerializer
+    permission_classes = P(IsSuperuser) | (P(IsAuthenticated) & P(IsReadOnly))
 
     def delete(self, request, pk):
         answer = Answer.objects.get(id=pk)

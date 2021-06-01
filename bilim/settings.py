@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'main',
     'django_filters',
     'django_rest_passwordreset',
+    'drf-composable-permissions',
     # 'corsheaders',
 
 ]
@@ -159,7 +160,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        # 'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_PAGINATION_CLASS': 'bilim.pagination.CustomPagination',
     'PAGE_SIZE': 10,

@@ -115,7 +115,10 @@ class MeView(APIView):
         else:
             user.profile.status = 'профессор'
             user.profile.save()
-
+        if user.profile.user_image:
+            image = 'http://127.0.0.1:8000'+user.profile.user_image.url
+        else:
+            image = None
         return Response({
             'status': 200,
             'data': {
@@ -125,7 +128,7 @@ class MeView(APIView):
                     'date_joined': user.date_joined,
                     'rating': user.profile.rating,
                     'status': user.profile.status,
-                    'image': 'http://192.168.1.8:8000'+user.profile.user_image.url,
+                    'image': image,
                 }
             }
         })

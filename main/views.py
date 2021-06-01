@@ -4,7 +4,7 @@ from rest_framework import generics, status, filters
 import rest_framework
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_condition import Or
@@ -67,6 +67,7 @@ class UsernameCheckView(generics.GenericAPIView):
 
 class LoginView(APIView):
     serializer_class = UserSerializer
+    permission_classes = (AllowAny, )
 
     @staticmethod
     def post(request):

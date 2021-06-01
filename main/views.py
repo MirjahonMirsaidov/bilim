@@ -30,7 +30,14 @@ class RegisterView(generics.GenericAPIView):
             id = User.objects.get(username=username).id
             Profile.objects.create(user_id=id)
 
-            return Response("Ro'yxatdan o'tish muvaffaqiyatli yakunlandi", status=status.HTTP_200_OK)
+            return Response({
+                'status': 'succes',
+                'code': status.HTTP_200_OK,
+                'message': "Ro'yxatdan o'tish muvaffaqiyatli yakunlandi",
+                'data': {
+                    'username': username,
+                },
+            })
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -191,7 +198,9 @@ class UserUpdateView(generics.GenericAPIView):
             user.username = username
             user.save()
             return Response({
-                'status': 200,
+                'status': 'succes',
+                'code': status.HTTP_200_OK,
+                'message': "O'zgartirish muvaffaqiyatli yakunlandi",
                 'data': {
                     'username': username,
 
@@ -212,11 +221,16 @@ class UserDeleteView(generics.GenericAPIView):
 
         if not self.object.check_password(password):
             return Response({
-                'error': "Wrong password."
-            }, status=status.HTTP_400_BAD_REQUEST)
+                'status': 'failed',
+                'code': status.HTTP_400_BAD_REQUEST,
+                'message': "Parol noto'g'ri",
+            })
         user.delete()
         return Response({
-            'succes': 'User deleted successfully!'}, status=status.HTTP_200_OK
+            'status': 'succes',
+            'code': status.HTTP_200_OK,
+            'message': "Akkaunt muvaffaqiyatli o'chirildi",
+        }
         )
 
     def get_object(self):
@@ -259,7 +273,7 @@ class SubjectQuestionView(generics.ListAPIView):
 
 class QuestionListView(generics.ListCreateAPIView):
     serializer_class = QuestionSerializer
-    # Searching parametrs /Qidiruv bo'yicha sozlamalar
+    # Qidiruv bo'yicha sozlamalar
     search_fields = ['text']
     filter_backends = (filters.SearchFilter,)
 
@@ -287,7 +301,9 @@ class QuestionUpdateView(generics.RetrieveUpdateAPIView):
             question.point = point
             question.save()
             return Response({
-                'status': 200,
+                'status': 'succes',
+                'code': status.HTTP_200_OK,
+                'message': "Savol o'zgartirildi",
                 'data': {
                     'id': question.id,
                     'question_text': question.text,
@@ -306,8 +322,9 @@ class QuestionDeleteView(generics.DestroyAPIView):
         if question:
             question.delete()
             return Response({
-                'status': 200,
-                'data': 'Question is deleted',
+                'status': 'succes',
+                'code': status.HTTP_200_OK,
+                'message': "Savol o'chirildi",
             })
 
 

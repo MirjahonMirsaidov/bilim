@@ -90,7 +90,7 @@ class Help(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     rating = models.IntegerField(default=50)
-    user_image = models.ImageField(verbose_name='User rasmi', default='default.png')
+    user_image = models.ImageField(verbose_name='User rasmi', null=True)
     status = models.CharField(verbose_name='Daraja', default='новычок', max_length=50)
     thanks = models.IntegerField(default=0)
     best_answers = models.IntegerField(default=0)

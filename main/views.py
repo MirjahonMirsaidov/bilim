@@ -4,11 +4,12 @@ from rest_framework import generics, status, filters
 import rest_framework
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-from drf_composable_permissions.permissions import IsReadOnly, IsSuperuser
-from drf_composable_permissions.p import P
+from rest_condition import Or
+# from drf_composable_permissions.permissions import IsReadOnly, IsSuperuser
+# from drf_composable_permissions.p import P
 
 from main.models import *
 from utils.calc import create_calc
@@ -322,7 +323,7 @@ class QuestionUpdateView(generics.RetrieveUpdateAPIView):
 
 class QuestionDeleteView(generics.DestroyAPIView):
     serializer_class = QuestionSerializer
-    permission_classes = P(IsSuperuser) | (P(IsAuthenticated) & P(IsReadOnly))
+    permission_classes = (Or(IsAdminUser, IsAuthenticated))
 
     def delete(self, request, pk):
         question = Question.objects.get(id=pk)
@@ -370,7 +371,7 @@ class AnswerUpdateView(generics.RetrieveUpdateAPIView):
 
 class AnswerDeleteView(generics.DestroyAPIView):
     serializer_class = AnswerSerializer
-    permission_classes = P(IsSuperuser) | (P(IsAuthenticated) & P(IsReadOnly))
+    permission_classes = (Or(IsAdminUser, IsAuthenticated))
 
     def delete(self, request, pk):
         answer = Answer.objects.get(id=pk)

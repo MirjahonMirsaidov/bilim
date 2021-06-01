@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'main',
     'django_filters',
     'django_rest_passwordreset',
-    'drf-composable-permissions',
+    # 'drf-composable-permissions',
+    'rest_condition',
     # 'corsheaders',
 
 ]

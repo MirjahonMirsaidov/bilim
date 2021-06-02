@@ -662,7 +662,8 @@ class AnswerCreateView(generics.CreateAPIView):
                 print("Rasmsiz")
             return Response({
 
-                'status': 200,
+                'status': "succes",
+                'code': 200,
                 'data': {
                     'user': user.pk,
                     'question_id': question,
@@ -670,8 +671,8 @@ class AnswerCreateView(generics.CreateAPIView):
                 }
             },
                 status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ThanksView(generics.CreateAPIView):

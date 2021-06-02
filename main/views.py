@@ -729,6 +729,7 @@ class AnswerCreateView(generics.CreateAPIView):
 
                     'status': "succes",
                     'code': 200,
+                    'message': 'Успешно создано',
                     'data': {
                         'user': user.pk,
                         'question_id': question,
@@ -746,25 +747,30 @@ class ThanksView(generics.CreateAPIView):
     serializer_class = AnswerSerializer
 
     def post(self, request):
-        answer_id = request.data.get('id')
-        answer = Answer.objects.get(id=answer_id)
-        user_id = request.user.pk
-        thank_check = Thank.objects.filter(user_id=user_id, answer_id=answer_id)
-        if thank_check:
-            return Response("Faqat bir marta", status=status.HTTP_208_ALREADY_REPORTED)
-        else:
+        try:
+            answer_id = request.data.get('id')
+            answer = Answer.objects.get(id=answer_id)
+            user_id = request.user.pk
+            thank_check = Thank.objects.filter(user_id=user_id, answer_id=answer_id)
+            if thank_check:
+                return Response("Только один раз", status=status.HTTP_208_ALREADY_REPORTED)
+            else:
 
-            thank = Thank.objects.create(
-                answer_id=answer_id, count=1, user_id=user_id)
-            thank.save()
-            user = User.objects.get(id=answer.user_id)
-            user.profile.thanks += 1
-            user.profile.save()
+                thank = Thank.objects.create(
+                    answer_id=answer_id, count=1, user_id=user_id)
+                thank.save()
+                user = User.objects.get(id=answer.user_id)
+                user.profile.thanks += 1
+                user.profile.save()
 
-            return Response({
-                'status': 200,
-                'data': {
-                    'answer': answer.text,
-                },
-            })
+                return Response({
+                    'status': 200,
+                    'message': 'Успешно создано',
+                    'data': {
+                        'answer': answer.text,
+                    },
+                })
+
+        except:
+            return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
 

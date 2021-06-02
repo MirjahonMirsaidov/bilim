@@ -48,6 +48,7 @@ class RegisterView(generics.GenericAPIView):
 
 class UsernameCheckView(generics.GenericAPIView):
     serializer_class = UserSerializer
+    permission_classes = (AllowAny,)
 
     @staticmethod
     def post(request):
@@ -221,7 +222,7 @@ class UserUpdateView(generics.GenericAPIView):
 
 
 class UserDeleteView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = (Or(IsAdminUser, IsAuthenticated), )
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):

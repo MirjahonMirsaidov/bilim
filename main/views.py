@@ -28,22 +28,25 @@ class RegisterView(generics.GenericAPIView):
 
     @staticmethod
     def post(request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            username = request.data.get('username')
-            id = User.objects.get(username=username).id
-            Profile.objects.create(user_id=id)
+        try:
+            serializer = UserSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                username = request.data.get('username')
+                id = User.objects.get(username=username).id
+                Profile.objects.create(user_id=id)
 
-            return Response({
-                'status': 'succes',
-                'code': status.HTTP_200_OK,
-                'message': "Ro'yxatdan o'tish muvaffaqiyatli yakunlandi",
-                'data': {
-                    'username': username,
-                },
-            })
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response({
+                    'status': 'succes',
+                    'code': status.HTTP_200_OK,
+                    'message': "Ro'yxatdan o'tish muvaffaqiyatli yakunlandi",
+                    'data': {
+                        'username': username,
+                    },
+                })
+            return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
 
 
 class UsernameCheckView(generics.GenericAPIView):
@@ -86,7 +89,7 @@ class LoginView(APIView):
                     'username': username
                 })
             else:
-                return Response("User topilmadi", status=status.HTTP_400_BAD_REQUEST)
+                return Response("Неверное имя пользователя или пароль", status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -95,51 +98,54 @@ class MeView(APIView):
 
     @staticmethod
     def get(request):
-        user = request.user
-        point = user.profile.rating
-        
-        if 0 < point < 100:
-            user.profile.status = 'новичок'
-            user.profile.save()
-        elif 100 <= point < 300:
-            user.profile.status = 'середнячок'
-            user.profile.save()
-        elif 300 <= point < 500:
-            user.profile.status = 'хорошист'
-            user.profile.save()
-        elif 500 <= point < 1000:
-            user.profile.status = 'умный'
-            user.profile.save()
-        elif 1000 <= point < 3000:
-            user.profile.status = 'отличник'
-            user.profile.save()
-        elif 3000 <= point < 5000:
-            user.profile.status = 'ученый'
-            user.profile.save()
-        elif 5000 <= point < 8000:
-            user.profile.status = 'почетный грамотей'
-            user.profile.save()
-        else:
-            user.profile.status = 'профессор'
-            user.profile.save()
-        if user.profile.user_image:
-            image = 'http://127.0.0.1:8000'+user.profile.user_image.url
-        else:
-            image = None
-        return Response({
-            'status': 200,
-            'data': {
-                'user': {
-                    'user_id': user.pk,
-                    'username': user.username,
-                    'date_joined': user.date_joined,
-                    'rating': user.profile.rating,
-                    'status': user.profile.status,
-                    'image': image,
-                    'is_admin': user.is_superuser,
+        try:
+            user = request.user
+            point = user.profile.rating
+
+            if 0 < point < 100:
+                user.profile.status = 'новичок'
+                user.profile.save()
+            elif 100 <= point < 300:
+                user.profile.status = 'середнячок'
+                user.profile.save()
+            elif 300 <= point < 500:
+                user.profile.status = 'хорошист'
+                user.profile.save()
+            elif 500 <= point < 1000:
+                user.profile.status = 'умный'
+                user.profile.save()
+            elif 1000 <= point < 3000:
+                user.profile.status = 'отличник'
+                user.profile.save()
+            elif 3000 <= point < 5000:
+                user.profile.status = 'ученый'
+                user.profile.save()
+            elif 5000 <= point < 8000:
+                user.profile.status = 'почетный грамотей'
+                user.profile.save()
+            else:
+                user.profile.status = 'профессор'
+                user.profile.save()
+            if user.profile.user_image:
+                image = 'http://127.0.0.1:8000'+user.profile.user_image.url
+            else:
+                image = None
+            return Response({
+                'status': 200,
+                'data': {
+                    'user': {
+                        'user_id': user.pk,
+                        'username': user.username,
+                        'date_joined': user.date_joined,
+                        'rating': user.profile.rating,
+                        'status': user.profile.status,
+                        'image': image,
+                        'is_admin': user.is_superuser,
+                    }
                 }
-            }
-        })
+            })
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class LogoutView(APIView):
@@ -147,7 +153,7 @@ class LogoutView(APIView):
     @staticmethod
     def delete(request, format=None):
         request.user.auth_token.delete()
-        return Response("Logout Success")
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserListView(generics.ListAPIView):
@@ -190,35 +196,38 @@ class UserUpdateView(generics.GenericAPIView):
 
     @staticmethod
     def patch(request):
-        serializer = UserSerializer(data=request.data)
-        user = request.user
-        username = request.data.get('username')
-        user_image = request.data.get('user_image')
-        if user_image:
-            if username == user.username or not username:
-                user.profile.user_image = user_image
-                user.profile.save()
-                return Response("Image successfuly updated")
-            else:
-                user.profile.user_image = user_image
+        try:
+            serializer = UserSerializer(data=request.data)
+            user = request.user
+            username = request.data.get('username')
+            user_image = request.data.get('user_image')
+            if user_image:
+                if username == user.username or not username:
+                    user.profile.user_image = user_image
+                    user.profile.save()
+                    return Response("Изображение успешно обновлены")
+                else:
+                    user.profile.user_image = user_image
+                    user.username = username
+                    user.save()
+                    user.profile.save()
+                    return Response("Имя пользователя и изображение успешно обновлены")
+            elif username != user.username and username.exists():
                 user.username = username
                 user.save()
-                user.profile.save()
-                return Response("Username and image successfuly updated")
-        elif username != user.username and username.exists():
-            user.username = username
-            user.save()
-            return Response({
-                'status': 'succes',
-                'code': status.HTTP_200_OK,
-                'message': "O'zgartirish muvaffaqiyatli yakunlandi",
-                'data': {
-                    'username': username,
+                return Response({
+                    'status': 'succes',
+                    'code': status.HTTP_200_OK,
+                    'message': "Изменение успешно",
+                    'data': {
+                        'username': username,
 
-                },
-            })
-        else:
-            return Response("O'zgarish amalga oshiring!")
+                    },
+                })
+            else:
+                return Response("Требуется изменение")
+        except:
+            return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserDeleteView(generics.GenericAPIView):
@@ -226,23 +235,27 @@ class UserDeleteView(generics.GenericAPIView):
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
-        self.object = self.request.user
-        user = request.user
-        password = request.data.get('password')
+        try:
+            self.object = self.request.user
+            user = request.user
+            password = request.data.get('password')
 
-        if not self.object.check_password(password):
+            if not self.object.check_password(password):
+                return Response({
+                    'status': 'failed',
+                    'code': status.HTTP_400_BAD_REQUEST,
+                    'message': "Неправильный пароль",
+                })
+            user.delete()
             return Response({
-                'status': 'failed',
-                'code': status.HTTP_400_BAD_REQUEST,
-                'message': "Parol noto'g'ri",
-            })
-        user.delete()
-        return Response({
-            'status': 'succes',
-            'code': status.HTTP_200_OK,
-            'message': "Akkaunt muvaffaqiyatli o'chirildi",
-        }
-        )
+                'status': 'succes',
+                'code': status.HTTP_200_OK,
+                'message': "Аккаунт успешно удален",
+            }
+            )
+        except:
+            return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
+
 
     def get_object(self):
         try:

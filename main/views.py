@@ -580,74 +580,74 @@ class QuestionCreateView(generics.CreateAPIView):
     serializer_class = QuestionSerializer
 
     def post(self, request):
-        # try:
-        serializer = QuestionSerializer(data=request.data)
-        subject = request.data.get('subject')
-        text = request.data.get('text')
-        length = request.data.get('length')
-        user_id = request.user.pk
-        ball = -int(request.data.get('point'))
-        ball_type = 'question'
-        user = RatingCalc.objects.filter(user=user_id).exists()
-        if not subject.isnumeric():
-            return Response("Выберите один из предметов")
-        else:
-            if user:
-                last_sum = RatingCalc.objects.filter(
-                    user_id=user_id).last().check_sum
-                m = hashlib.md5(
-                    str(last_sum+str(user_id)+str(ball)+ball_type).encode('utf-8'))
-                check_sum = m.hexdigest()
-                print(last_sum)
-                print(check_sum)
-
+        try:
+            serializer = QuestionSerializer(data=request.data)
+            subject = request.data.get('subject')
+            text = request.data.get('text')
+            length = request.data.get('length')
+            user_id = request.user.pk
+            ball = -int(request.data.get('point'))
+            ball_type = 'question'
+            user = RatingCalc.objects.filter(user=user_id).exists()
+            if not subject.isnumeric():
+                return Response("Выберите один из предметов")
             else:
-                m = hashlib.md5(
-                    str(str(user_id)+str(ball)+ball_type).encode('utf-8'))
-                check_sum = m.hexdigest()
-                print(check_sum)
-            sub_check = Subject.objects.filter(id=subject).exists()
-            if sub_check is None or sub_check is False:
-                return Response({
-                    'status': 'failed',
-                    'code': status.HTTP_404_NOT_FOUND,
+                if user:
+                    last_sum = RatingCalc.objects.filter(
+                        user_id=user_id).last().check_sum
+                    m = hashlib.md5(
+                        str(last_sum+str(user_id)+str(ball)+ball_type).encode('utf-8'))
+                    check_sum = m.hexdigest()
+                    print(last_sum)
+                    print(check_sum)
 
-                })
-            if serializer.is_valid():
-                user = Profile.objects.get(user=user_id)
-                profile_ball = Profile.objects.get(user=user_id).rating
-                if (-ball) <= profile_ball:
-
-                    profile_ball += int(ball)
-                    user.rating = profile_ball
-                    user.save()
-                    question = serializer.save(subject_id=subject, user_id=user_id)
-                    create_calc(user_id, check_sum, ball, ball_type)
-                    for file_num in range(0, int(length)):
-                        images = request.FILES.get(f'images{file_num}')
-                        QuestionImage.objects.create(
-                            question=question,
-                            images=images
-                        )
-                        print(images,request.data)
-
+                else:
+                    m = hashlib.md5(
+                        str(str(user_id)+str(ball)+ball_type).encode('utf-8'))
+                    check_sum = m.hexdigest()
+                    print(check_sum)
+                sub_check = Subject.objects.filter(id=subject).exists()
+                if sub_check is None or sub_check is False:
                     return Response({
-                        'status': 'succes',
-                        'code': status.HTTP_200_OK,
-                        'message': 'Успешно создано',
-                        'data': {
-                            'username': request.user.username,
-                            'subject': subject,
-                            'question': text,
-                            'point': -ball,
-                        }
-                    },)
-                return Response(f'Ваша оценка за вопрос больше {profile_ball} ')
+                        'status': 'failed',
+                        'code': status.HTTP_404_NOT_FOUND,
 
-            else:
-                return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)
-        # except:
-        #     return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
+                    })
+                if serializer.is_valid():
+                    user = Profile.objects.get(user=user_id)
+                    profile_ball = Profile.objects.get(user=user_id).rating
+                    if (-ball) <= profile_ball:
+
+                        profile_ball += int(ball)
+                        user.rating = profile_ball
+                        user.save()
+                        question = serializer.save(subject_id=subject, user_id=user_id)
+                        create_calc(user_id, check_sum, ball, ball_type)
+                        for file_num in range(0, int(length)):
+                            images = request.FILES.get(f'images{file_num}')
+                            QuestionImage.objects.create(
+                                question=question,
+                                images=images
+                            )
+                            print(images,request.data)
+
+                        return Response({
+                            'status': 'succes',
+                            'code': status.HTTP_200_OK,
+                            'message': 'Успешно создано',
+                            'data': {
+                                'username': request.user.username,
+                                'subject': subject,
+                                'question': text,
+                                'point': -ball,
+                            }
+                        },)
+                    return Response(f'Ваша оценка за вопрос больше {profile_ball} ')
+
+                else:
+                    return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
 
 
 class AnswerCreateView(generics.CreateAPIView):

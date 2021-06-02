@@ -39,12 +39,13 @@ class RegisterView(generics.GenericAPIView):
                 return Response({
                     'status': 'succes',
                     'code': status.HTTP_200_OK,
-                    'message': "Ro'yxatdan o'tish muvaffaqiyatli yakunlandi",
+                    'message': "Регистрация прошла успешно",
                     'data': {
                         'username': username,
                     },
                 })
-            return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
 
@@ -127,7 +128,7 @@ class MeView(APIView):
                 user.profile.status = 'профессор'
                 user.profile.save()
             if user.profile.user_image:
-                image = 'http://127.0.0.1:8000'+user.profile.user_image.url
+                image = 'http://176.99.11.80:8050'+user.profile.user_image.url
             else:
                 image = None
             return Response({
@@ -164,31 +165,6 @@ class UserListView(generics.ListAPIView):
 class UserDetailView(generics.RetrieveAPIView):
     serializer_class = UserDetailSerializer
     queryset = User.objects.all()
-
-    # def get(self, request, pk):
-    #     serializer = QuestionSerializer(data=request.data)
-    #     user = User.objects.get(pk=pk)
-    #     questions_count = Question.objects.filter(user_id=user.pk).count()
-    #     answers_count = Answer.objects.filter(user_id=user.pk).count()
-    #     questions = Question.objects.filter(user=pk).values()
-    #     answers = Answer.objects.filter(user_id=pk).values()
-
-    #     return Response({
-    #             'status': 200,
-    #             'data': {
-    #                 'id': user.pk,
-    #                 'username': user.username,
-    #                 'image': 'http://192.168.1.8:8000'+user.profile.user_image.url,
-    #                 'questions_count': questions_count,
-    #                 'answers_count': answers_count,
-    #                 'thanks': user.profile.thanks,
-    #                 'best_answers': user.profile.best_answers,
-    #                 },
-
-    #             'questions':  questions,
-    #             'answers' : answers,
-
-    #             })
 
 
 class UserUpdateView(generics.GenericAPIView):
@@ -551,8 +527,6 @@ class BestCreateView(generics.GenericAPIView):
                 return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
-
-    return Response(serializer.errors)
 
 
 class HelpListView(generics.ListAPIView):

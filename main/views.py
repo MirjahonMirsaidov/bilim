@@ -24,6 +24,7 @@ class SubjectListView(generics.ListAPIView):
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = UserSerializer
+    permission_classes = (AllowAny,)
 
     @staticmethod
     def post(request):

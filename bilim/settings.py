@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 from environs import Env
+from corsheaders.defaults import default_headers
 
 # Initialise environment variables
 env = Env()
@@ -32,14 +33,21 @@ SECRET_KEY = env.str('SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = ['176.99.11.80', 'localhost', '127.0.0.1', ]
-# CORS_ALLOWED_ORIGINS = [
-#     "http://brainly.uz",
-#
-# ]
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = [
-    'http://brainly.uz',
+CORS_ALLOWED_ORIGINS = [
+    "http://brainly.uz",
+    "http://176.99.11.80:3333"
+
 ]
+CSRF_TRUSTED_ORIGINS = [
+    "http://brainly.uz",
+]
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'Access-Control-Allow-Origin',
+]
+# CORS_ALLOW_ALL_ORIGINS = False
+# CORS_ORIGIN_WHITELIST = [
+#     'http://brainly.uz',
+# ]
 
 
 # Application definition

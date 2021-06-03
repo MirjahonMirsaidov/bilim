@@ -34,8 +34,9 @@ DEBUG = False
 ALLOWED_HOSTS = ['176.99.11.80', 'localhost', '127.0.0.1', ]
 # CORS_ALLOWED_ORIGINS = [
 #     "http://brainly.uz",
+#
 # ]
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
     'http://brainly.uz',
 ]

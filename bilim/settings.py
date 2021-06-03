@@ -34,20 +34,16 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['176.99.11.80', 'localhost', '127.0.0.1', ]
 CORS_ALLOWED_ORIGINS = [
-    "http://brainly.uz",
-    "http://176.99.11.80:3333"
+    'http://brainly.uz',
+    'http://176.99.11.80:3333',
+'http://176.99.11.80:8050',
+    'http://localhost:8000',
 
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "http://brainly.uz",
-]
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    'Access-Control-Allow-Origin',
+    'http://brainly.uz',
 ]
 # CORS_ALLOW_ALL_ORIGINS = False
-# CORS_ORIGIN_WHITELIST = [
-#     'http://brainly.uz',
-# ]
 
 
 # Application definition

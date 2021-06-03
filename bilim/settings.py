@@ -148,8 +148,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # 'static' is my media folder
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 'media' is my media folder
-# MEDIA_URL = 'http://176.99.11.80:8050/media/'
-MEDIA_URL = 'http://127.0.0.1:8000/media/'
+MEDIA_URL = 'http://176.99.11.80:8050/media/'  # production
+# MEDIA_URL = 'http://127.0.0.1:8000/media/'   # development
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static_dev'),

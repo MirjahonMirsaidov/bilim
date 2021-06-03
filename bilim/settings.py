@@ -29,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
@@ -148,7 +148,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # 'static' is my media folder
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 'media' is my media folder
-MEDIA_URL = '/media/'
+# MEDIA_URL = 'http://176.99.11.80:8050/media/'
+MEDIA_URL = 'http://127.0.0.1:8000/media/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static_dev'),

@@ -128,7 +128,7 @@ class MeView(APIView):
                 user.profile.status = 'профессор'
                 user.profile.save()
             if user.profile.user_image:
-                image = 'http://176.99.11.80:8050'+user.profile.user_image.url
+                image = user.profile.user_image.url
             else:
                 image = None
             return Response({

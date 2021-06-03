@@ -35,8 +35,8 @@ ALLOWED_HOSTS = ['176.99.11.80', 'localhost', '127.0.0.1', ]
 CORS_ALLOWED_ORIGINS = [
     "https://brainly.uz",
     "http://brainly.uz",
-    '176.99.11.80',
-    '176.99.11.80:3333'
+    'https://176.99.11.80:3333',
+    'http://176.99.11.80:3333'
 ]
 
 

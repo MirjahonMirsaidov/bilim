@@ -32,13 +32,13 @@ SECRET_KEY = env.str('SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = ['176.99.11.80', 'localhost', '127.0.0.1', ]
-CORS_ALLOWED_ORIGINS = [
-    "http://brainly.uz",
-]
-# CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ORIGIN_WHITELIST = [
-#     'http://brainly.uz',
+# CORS_ALLOWED_ORIGINS = [
+#     "http://brainly.uz",
 # ]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_WHITELIST = [
+    'http://brainly.uz',
+]
 
 
 # Application definition
@@ -63,9 +63,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

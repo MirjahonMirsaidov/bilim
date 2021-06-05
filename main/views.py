@@ -627,7 +627,7 @@ class QuestionCreateView(generics.CreateAPIView):
                             images = request.FILES.get(f'images{file_num}')
                             QuestionImage.objects.create(
                                 question=question,
-                                images=images
+                                image=images
                             )
                             print(images,request.data)
 

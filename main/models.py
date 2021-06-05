@@ -32,7 +32,7 @@ class Question(models.Model):
 
 class QuestionImage(models.Model):
     question = models.ForeignKey(Question, default=None, on_delete=models.CASCADE, related_name='images')
-    images = models.FileField()
+    image = models.FileField()
 
     def __str__(self):
         return self.question.text
@@ -53,7 +53,7 @@ class Answer(models.Model):
     
 class AnswerImage(models.Model):
     answer = models.ForeignKey(Answer, default=None, on_delete=models.CASCADE, related_name='images')
-    images = models.FileField()
+    image = models.FileField()
 
     def __str__(self):
         return self.answer.text

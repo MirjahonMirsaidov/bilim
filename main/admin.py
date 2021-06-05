@@ -9,6 +9,7 @@ TokenAdmin.raw_id_fields = ['user']
 
 admin.site.register(Subject)
 admin.site.register(Question)
+admin.site.register(QuestionImage)
 admin.site.register(Answer)
 admin.site.register(Profile)
 admin.site.register(Comment)

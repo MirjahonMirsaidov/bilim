@@ -30,20 +30,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['176.99.11.80', 'localhost', '127.0.0.1', ]
-CORS_ALLOWED_ORIGINS = [
-    'http://brainly.uz',
-    'http://176.99.11.80:3333',
-'http://176.99.11.80:8050',
-    'http://localhost:8000',
+ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
 
-]
+# ALLOWED_HOSTS = ['176.99.11.80', 'localhost', '127.0.0.1', ]
+# CORS_ALLOWED_ORIGINS = '*'
+# CORS_ALLOWED_ORIGINS = [
+#     'http://brainly.uz',
+#     'http://176.99.11.80:3333',
+# 'http://176.99.11.80:8050',
+#     'http://localhost:8000',
+#
+# ]
 # CSRF_TRUSTED_ORIGINS = [
 #     'http://brainly.uz',
 # ]
-# CORS_ALLOW_ALL_ORIGINS = False
+# CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Application definition

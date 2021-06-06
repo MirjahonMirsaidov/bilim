@@ -667,57 +667,67 @@ class AnswerCreateView(generics.CreateAPIView):
             subject = Question.objects.get(id=question).subject_id
             ball_type = 'answer'
             user = RatingCalc.objects.filter(user=user_id).exists()
-
-            if user:
-                last_sum = RatingCalc.objects.filter(
-                    user_id=user_id).last().check_sum
-                m = hashlib.md5(str(last_sum + str(user_id) +
-                                    str(ball) + ball_type).encode('utf-8'))
-                check_sum = m.hexdigest()
-
-
-            else:
-                m = hashlib.md5(
-                    str(str(user_id) + str(ball) + ball_type).encode('utf-8'))
-                check_sum = m.hexdigest()
-                print(check_sum)
-
-            if serializer.is_valid():
-                user = Profile.objects.get(user=user_id)
-                profile_ball = Profile.objects.get(user=user_id).rating
-                print(profile_ball)
-                profile_ball += int(ball)
-                user.rating = profile_ball
-                print(user.rating)
-                user.save()
-
-                answer = serializer.save(question_id=question,
-                                         user_id=user_id, subject_id=subject)
-                create_calc(user_id, check_sum, ball, ball_type)
-                if length:
-                    for file_num in range(0, int(length)):
-                            images = request.data.get(f'images{file_num}')
-                            AnswerImage.objects.create(
-                                answer=answer,
-                                images=images
-                            )
-                            print(images,request.data)
-                else:
-                    print("Rasmsiz")
+            answers = Answer.objects.filter(question_id=question).count()
+            if answers >= 2:
                 return Response({
 
-                    'status': "succes",
-                    'code': 200,
-                    'message': 'Успешно создано',
-                    'data': {
-                        'user': user.pk,
-                        'question_id': question,
-                        'answer': text,
-                    }
+                    'status': "failed",
+                    'code': 400,
+                    'message': 'На этот вопрос нельзя ответить',
+
                 },
-                    status=status.HTTP_201_CREATED)
+                    status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)
+                if user:
+                    last_sum = RatingCalc.objects.filter(
+                        user_id=user_id).last().check_sum
+                    m = hashlib.md5(str(last_sum + str(user_id) +
+                                        str(ball) + ball_type).encode('utf-8'))
+                    check_sum = m.hexdigest()
+
+
+                else:
+                    m = hashlib.md5(
+                        str(str(user_id) + str(ball) + ball_type).encode('utf-8'))
+                    check_sum = m.hexdigest()
+                    print(check_sum)
+
+                if serializer.is_valid():
+                    user = Profile.objects.get(user=user_id)
+                    profile_ball = Profile.objects.get(user=user_id).rating
+                    print(profile_ball)
+                    profile_ball += int(ball)
+                    user.rating = profile_ball
+                    print(user.rating)
+                    user.save()
+
+                    answer = serializer.save(question_id=question,
+                                             user_id=user_id, subject_id=subject)
+                    create_calc(user_id, check_sum, ball, ball_type)
+                    if length:
+                        for file_num in range(0, int(length)):
+                                images = request.data.get(f'images{file_num}')
+                                AnswerImage.objects.create(
+                                    answer=answer,
+                                    images=images
+                                )
+                                print(images,request.data)
+                    else:
+                        print("Rasmsiz")
+                    return Response({
+
+                        'status': "succes",
+                        'code': 200,
+                        'message': 'Успешно создано',
+                        'data': {
+                            'user': user.pk,
+                            'question_id': question,
+                            'answer': text,
+                        }
+                    },
+                        status=status.HTTP_201_CREATED)
+                else:
+                    return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
 

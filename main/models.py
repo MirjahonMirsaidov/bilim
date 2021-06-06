@@ -17,7 +17,7 @@ class Subject(models.Model):
 
 
 class Question(models.Model):
-    subject = models.ForeignKey(Subject, verbose_name='Fan nomi', on_delete=models.CASCADE, required=True)
+    subject = models.ForeignKey(Subject, verbose_name='Fan nomi', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='questions', on_delete=models.CASCADE)
     text = models.TextField(verbose_name='Savol matni')
     asked_date = models.DateTimeField(auto_now_add=True, verbose_name='Savol berilgan vaqt')

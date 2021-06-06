@@ -96,6 +96,7 @@ class LoginView(APIView):
 
 
 class MeView(APIView):
+    permission_classes = (Or(IsAdminUser, IsAuthenticated),)
 
     @staticmethod
     def get(request):
@@ -128,7 +129,7 @@ class MeView(APIView):
                 user.profile.status = 'профессор'
                 user.profile.save()
             if user.profile.user_image:
-                image = 'http://176.99.11.80:8050'+user.profile.user_image.url
+                image = user.profile.user_image.url
             else:
                 image = None
             return Response({
@@ -169,7 +170,7 @@ class UserDetailView(generics.RetrieveAPIView):
 
 class UserUpdateView(generics.GenericAPIView):
     serializer_class = UserSerializer
-
+    permission_classes = (Or(IsAdminUser, IsAuthenticated),)
     @staticmethod
     def patch(request):
         try:
@@ -243,6 +244,7 @@ class UserDeleteView(generics.GenericAPIView):
 
 class UserQuestionsView(generics.ListAPIView):
     serializer_class = QuestionSerializer
+    permission_classes = (Or(IsAdminUser, IsAuthenticated),)
 
     def get_queryset(self):
         try:
@@ -349,6 +351,7 @@ class QuestionDeleteView(generics.DestroyAPIView):
 
 class AnswerListView(generics.ListAPIView):
     serializer_class = AnswerSerializer
+    permission_classes = (Or(IsAdminUser, IsAuthenticated),)
 
     def get_queryset(self):
         queryset = Answer.objects.all()

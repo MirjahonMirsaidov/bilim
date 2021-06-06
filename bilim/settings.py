@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 from environs import Env
+from corsheaders.defaults import default_headers
 
 # Initialise environment variables
 env = Env()
@@ -29,10 +30,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL = True
+
+# ALLOWED_HOSTS = ['176.99.11.80', 'localhost', '127.0.0.1', ]
+# CORS_ALLOWED_ORIGINS = '*'
+# CORS_ALLOWED_ORIGINS = [
+#     'http://brainly.uz',
+#     'http://176.99.11.80:3333',
+# 'http://176.99.11.80:8050',
+#     'http://localhost:8000',
+#
+# ]
+# CSRF_TRUSTED_ORIGINS = [
+#     'http://brainly.uz',
+# ]
+# CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Application definition
@@ -148,7 +163,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # 'static' is my media folder
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 'media' is my media folder
-MEDIA_URL = '/media/'
+MEDIA_URL = 'http://176.99.11.80:8050/media/'  # production
+# MEDIA_URL = 'http://127.0.0.1:8000/media/'   # development
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static_dev'),

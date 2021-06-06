@@ -19,6 +19,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(required=False)
+    username = serializers.CharField(min_length=6)
 
     class Meta:
         model = User

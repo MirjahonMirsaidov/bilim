@@ -31,8 +31,8 @@ class RegisterView(generics.GenericAPIView):
         try:
             serializer = UserSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save() 
                 username = request.data.get('username')
+                serializer.save()
                 id = User.objects.get(username=username).id
                 Profile.objects.create(user_id=id)
 
@@ -44,8 +44,6 @@ class RegisterView(generics.GenericAPIView):
                         'username': username,
                     },
                 })
-            else:
-                return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
 

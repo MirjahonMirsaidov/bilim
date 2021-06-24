@@ -31,7 +31,7 @@ class RegisterView(generics.GenericAPIView):
         try:
             serializer = UserSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save()
+                serializer.save() 
                 username = request.data.get('username')
                 id = User.objects.get(username=username).id
                 Profile.objects.create(user_id=id)

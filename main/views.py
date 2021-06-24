@@ -33,27 +33,18 @@ class RegisterView(generics.GenericAPIView):
             if serializer.is_valid():
                 email = request.data.get('email')
                 username = request.data.get('username')
-                if User.objects.filter(username=username, email=email).exists():
-                    return Response({
-                    'status': 'failed',
-                    'code': status.HTTP_208_ALREADY_REPORTED,
-                    'message': "Уже зарегистрирован",
-                })
-                else:
-                    serializer.save()
-                    id = User.objects.get(username=username).id
-                    Profile.objects.create(user_id=id)
+                serializer.save()
+                id = User.objects.get(username=username).id
+                Profile.objects.create(user_id=id)
 
-                    return Response({
-                        'status': 'succes',
-                        'code': status.HTTP_200_OK,
-                        'message': "Регистрация прошла успешно",
-                        'data': {
-                            'username': username,
-                        },
-                    })
-            else:
-                return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)
+                return Response({
+                    'status': 'succes',
+                    'code': status.HTTP_200_OK,
+                    'message': "Регистрация прошла успешно",
+                    'data': {
+                        'username': username,
+                    },
+                })
         except:
             return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
 

@@ -58,14 +58,14 @@ class QuestionImagesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = QuestionImage
-        fields = ('image', )
+        fields = ('images', )
 
 
 class AnswerImagesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AnswerImage
-        fields = ('image',)
+        fields = ('images',)
 
 
 class CommentSerializer(serializers.ModelSerializer):

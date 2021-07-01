@@ -157,7 +157,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 'static' is my media folder
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 'media' is my media folder
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')  # 'media' is my media folder
 MEDIA_URL = 'https://mirjahon-bilim.herokuapp.com/media/'  # production
 # MEDIA_URL = 'http://127.0.0.1:8000/media/'   # development
 

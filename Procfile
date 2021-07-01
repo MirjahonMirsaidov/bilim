@@ -1,0 +1,1 @@
+web: gunicorn bilim.wsgi --log-file -

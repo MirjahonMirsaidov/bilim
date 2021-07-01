@@ -15,9 +15,6 @@ import os
 from environs import Env
 from corsheaders.defaults import default_headers
 
-# Initialise environment variables
-env = Env()
-env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str('SECRET_KEY')
+SECRET_KEY = "mm*jsis%wp4uv^p#-efb5cz^1*kmkt89w)yy^p6x3_&99jd2%x"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -73,6 +70,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -109,11 +107,8 @@ WSGI_APPLICATION = 'bilim.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'localhost',
-        'NAME': env.str('DATABASE_NAME'),
-        'USER': env.str('DATABASE_USER'),
-        'PASSWORD': env.str('DATABASE_PASS'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -159,15 +154,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # 'static' is my media folder
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 'static' is my media folder
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 'media' is my media folder
-MEDIA_URL = 'http://176.99.11.80:8050/media/'  # production
+MEDIA_URL = 'https://mirjahon-bilim.herokuapp.com/media/'  # production
 # MEDIA_URL = 'http://127.0.0.1:8000/media/'   # development
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static_dev'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 

@@ -189,7 +189,7 @@ class UserUpdateView(generics.GenericAPIView):
                     user.save()
                     user.profile.save()
                     return Response("Имя пользователя и изображение успешно обновлены")
-            elif username != user.username and username.exists():
+            elif username != '':
                 user.username = username
                 user.save()
                 return Response({

@@ -645,7 +645,7 @@ class QuestionCreateView(generics.CreateAPIView):
                                 'point': -ball,
                             }
                         },)
-                    return Response(f'Ваша оценка за вопрос больше {profile_ball} ')
+                    return Response(f'Ваша оценка за вопрос больше {profile_ball} ', status=status.HTTP_400_BAD_REQUEST)
 
                 else:
                     return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)

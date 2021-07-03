@@ -44,6 +44,8 @@ class RegisterView(generics.GenericAPIView):
                         'username': username,
                     },
                 })
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
 

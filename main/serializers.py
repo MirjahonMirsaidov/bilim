@@ -38,12 +38,12 @@ class UserSerializer(serializers.ModelSerializer):
         
         return super().validate(attrs)
 
-    def create(self, validated_data):
-        return User.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=make_password(validated_data['password'])
-        )
+    # def create(self, validated_data):
+    #     return User.objects.create(
+    #         username=validated_data['username'],
+    #         email=validated_data['email'],
+    #         password=make_password(validated_data['password'])
+    #     )
 
 
 class UserGetSerializer(serializers.ModelSerializer):

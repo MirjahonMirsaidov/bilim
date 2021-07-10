@@ -44,6 +44,8 @@ class RegisterView(generics.GenericAPIView):
                         'username': username,
                     },
                 })
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response("Произошла ошибка", status=status.HTTP_400_BAD_REQUEST)
 
@@ -187,7 +189,7 @@ class UserUpdateView(generics.GenericAPIView):
                     user.save()
                     user.profile.save()
                     return Response("Имя пользователя и изображение успешно обновлены")
-            elif username != user.username and username.exists():
+            elif username != '':
                 user.username = username
                 user.save()
                 return Response({
@@ -643,7 +645,7 @@ class QuestionCreateView(generics.CreateAPIView):
                                 'point': -ball,
                             }
                         },)
-                    return Response(f'Ваша оценка за вопрос больше {profile_ball} ')
+                    return Response(f'Ваша оценка за вопрос больше {profile_ball} ', status=status.HTTP_400_BAD_REQUEST)
 
                 else:
                     return Response("Введите всю данные", status=status.HTTP_400_BAD_REQUEST)

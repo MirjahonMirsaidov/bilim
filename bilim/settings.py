@@ -112,10 +112,10 @@ DATABASES = {
     }
 }
 
-import dj_database_url
-
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-DATABASES['default'] = dj_database_url.config(default='postgres://ecxcygtpdciufq:7fd3f1ac4696c304059c6fc498590f64cdf65e67443a153a60ac0cd3f4e11b0c@ec2-54-91-188-254.compute-1.amazonaws.com:5432/ddpp380imdt5qg')
+# import dj_database_url
+#
+# DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+# DATABASES['default'] = dj_database_url.config(default='postgres://ecxcygtpdciufq:7fd3f1ac4696c304059c6fc498590f64cdf65e67443a153a60ac0cd3f4e11b0c@ec2-54-91-188-254.compute-1.amazonaws.com:5432/ddpp380imdt5qg')
 
 
 # Password validation

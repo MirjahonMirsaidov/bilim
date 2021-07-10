@@ -107,9 +107,11 @@ WSGI_APPLICATION = 'bilim.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': 'mirjahonn.mysql.pythonanywhere-services.com',
+        'NAME': 'programmerDX$default',
+        'USER': 'mirjahonn',
+        'PASSWORD': "(']$fcrX\]D'23j-"}
 }
 
 # import dj_database_url
@@ -163,7 +165,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 'static' is my media fold
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')  # 'media' is my media folder
-MEDIA_URL = 'https://mirjahon-bilim.herokuapp.com/media/'  # production
+MEDIA_URL = 'https://programmerDX.pythonanywhere.com/media/'  # production
 # MEDIA_URL = 'http://127.0.0.1:8000/media/'   # development
 
 STATICFILES_DIRS = (
